@@ -1,3 +1,19 @@
+# For making text-based UIs
+
+
+
+Sad that making those new-fangled moving pictures can be so complicated?
+Do you *really* not care about the quality of your graphics as long it works?
+
+Well suffer no more!
+
+
+![](./assets/life_example.gif)
+(gif with extra jpeg for your pleasure)
+
+
+# life of py (with fewer tigers)
+```
 from easycurses import *
 from time import sleep
 def life(): #conway's game of life. 
@@ -44,3 +60,6 @@ def life(): #conway's game of life.
     finally:
         dc.end() #do this to restore terminal to normal.
 life()
+```
+
+Waow! Concise! Whoooooopie. 
