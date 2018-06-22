@@ -305,10 +305,6 @@ class KeyboardController():
                     to_remove.add(e)
             self.callbacks[c] -= to_remove
 
-if __name__ == '__main__':
-
-
-
 
 
 
