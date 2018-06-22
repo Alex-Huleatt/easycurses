@@ -138,6 +138,9 @@ An error will be thrown if you add a rule with the same id as another.
 
 The rule receives a `Pair` instance. If you aren't using `Pair`s you can just pretend it's a tuple.
 
+## KeyboardController
+
+I'll write this later.
 
 # Why
 I make a lot of programs with bad UIs and wanted to expedite the process.
