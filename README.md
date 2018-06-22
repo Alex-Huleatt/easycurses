@@ -92,3 +92,52 @@ dc.end()
 ```
 
 Your shell will be all sorts of messed up after your code if it doesn't end with this.
+
+# The classes
+
+## Pair
+
+The `Pair` class is just a 2D coordinate (vector) in the form of (y,x). The `Char` class automatically converts tuples to a Pair, so you don't need to use it at all. `Pair` has some utility functions I use. 
+
+## Char
+
+Char holds on to the information to display a character
+* position (internally a `Pair`, but you can use tuples)
+* the actual ascii character to display
+* an optional color
+
+## ColorController
+
+It's a singleton, with some static methods thrown in to make it so you don't need to grab an instance. Don't ever do `ColorController()`. It isn't necessary.
+
+So the original `curses` makes you initialize a "color pair" and assign an int id to it. That's too much effort, so just do `ColorController.get_color(text_color, background_color)`. It returns an int that all the other classes interpret as the colors you wanted. 
+
+## DrawController
+
+The actual class that does stuff. It doesn't display stuff till you call `render`. If you want something to display the next time `render` is called you *must* `draw` it every time. 
+
+If you want things to stay on-screen, you have to make a "rule". 
+
+`dc.add_rule(1, lambda p:p[0] % 2 == 0, "#", color=ColorController.get_color("red", "black"))`
+
+**That** rule would make it so any coordinate that satisfies our lambda `lambda p:p[0] % 2 == 0` (even numbered rows), will **default** to a red # on a black background. 
+
+It only **defaults** to that. If you actively draw anything at a position satisfying that rule, that will be displayed instead.
+
+The life example above has the standard default character (a black space on a black background).
+
+To change that you could do:
+
+```
+dc.add_rule(1, lambda p:True, ' ', color=ColorController.get_color("cyan", "cyan"))
+```
+
+The first argument, the integer, specifies the id of the rule if you ever want to change or remove it. (Using `update_rule` or `remove_rule`)
+
+An error will be thrown if you add a rule with the same id as another.
+
+The rule receives a `Pair` instance. If you aren't using `Pair`s you can just pretend it's a tuple.
+
+
+# Why
+I make a lot of programs with bad UIs and wanted to expedite the process.
