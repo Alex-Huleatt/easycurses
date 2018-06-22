@@ -9,6 +9,7 @@ Well suffer no more!
 
 
 ![](./assets/life_example.gif)
+
 (gif with extra jpeg for your pleasure)
 
 
@@ -23,7 +24,6 @@ def life(): #conway's game of life.
         dc.full_draw()
         h,w = dc.size
         y,x = h//2,w//2 #center of screen
-        CC = ColorController
         
         #Initial state of grid (r-pentomino)
         active = [
@@ -37,7 +37,7 @@ def life(): #conway's game of life.
         active = map(lambda p:Pair(p[0],p[1]), active)
         while True:
             for a in active:
-                c = Char(a, ' ', color=CC.get_color("white","white"))
+                c = Char(a, ' ', color=ColorController.get_color("white","white"))
                 dc.draw([c])
 
             dc.render()
@@ -62,4 +62,33 @@ def life(): #conway's game of life.
 life()
 ```
 
-Waow! Concise! Whoooooopie. 
+## The important bits for this example
+
+```
+dc = DrawController()
+dc.init_screen()
+dc.full_draw()
+h,w = dc.size
+```
+
+The full draw is important as it initializes all cells to their default value.
+
+You can specify the global default or provide specific defaults for cells that satisfy a property (like "any cell below the 10th row should be a magenta asterisk", or "cells with an odd x-coordinate should be red")
+
+```
+for a in active:
+    c = Char(a, ' ', color=ColorController.get_color("white","white"))
+    dc.draw([c])
+
+dc.render()
+```
+
+The only thing you can draw to the screen is a `Char`. It needs a position, display character, and can optionally receive a color pair. 
+
+the `DrawController`'s `draw` method takes a *list* of characters to draw.
+
+```
+dc.end()
+```
+
+Your shell will be all sorts of messed up after your code if it doesn't end with this.
