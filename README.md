@@ -140,7 +140,7 @@ The rule receives a `Pair` instance. If you aren't using `Pair`s you can just pr
 
 ## KeyboardController
 
-I'll write this later.
+It's in the code, but documentation later.
 
 # Why
 I make a lot of programs with bad UIs and wanted to expedite the process.
