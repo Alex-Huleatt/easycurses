@@ -1,5 +1,5 @@
 from easycurses import *
-from time import sleep
+
 def life(): #conway's game of life. 
     try:
         dc = DrawController()
@@ -18,7 +18,7 @@ def life(): #conway's game of life.
         (y+2,x+1)
         ]
 
-        active = map(lambda p:Pair(p[0],p[1]), active)
+        active, enough, new_active = set(map(lambda p:Pair(p[0],p[1]), active)), set(), set()
         while True:
             for a in active:
                 c = Char(a, ' ', color=CC.get_color("white","white"))
@@ -27,20 +27,24 @@ def life(): #conway's game of life.
             dc.render()
 
             n_count = defaultdict(int)
+            enough.clear()
             for o in active:
                 for n in o.get_neighbors(ortho=False):
+                    if n in n_count and (n in active or n_count[n] > 1):
+                        enough.add(n)
                     n_count[n]+=1
 
-            new_active = []
-            for k in n_count.keys():
+            new_active = set()
+
+            for k in enough:
                 c = n_count[k]
-                if k not in active and c == 3:
-                    new_active.append(k)
-                elif k in active and c in [2,3]:
-                    new_active.append(k)
+                if k in active:
+                    if c == 2 or c == 3:new_active.add(k)
+                elif c == 3:new_active.add(k)
+                
 
             active = new_active
-            sleep(.05)
+
     finally:
         dc.end() #do this to restore terminal to normal.
 life()

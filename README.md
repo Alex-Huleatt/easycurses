@@ -3,7 +3,10 @@
 
 
 Sad that making those new-fangled moving pictures can be so complicated?
+
 Do you *really* not care about the quality of your graphics as long it works?
+
+Want *interactive* displays without the hassle?
 
 Well suffer no more!
 
@@ -71,7 +74,7 @@ dc.full_draw()
 h,w = dc.size
 ```
 
-The full draw is important as it initializes all cells to their default value.
+The full draw is important as it initializes all of the text cells to their default character/color.
 
 You can specify the global default or provide specific defaults for cells that satisfy a property (like "any cell below the 10th row should be a magenta asterisk", or "cells with an odd x-coordinate should be red")
 

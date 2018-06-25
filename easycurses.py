@@ -50,7 +50,10 @@ class Pair():
         raise IndexError("No.")
 
     def __hash__(self):
-        return (self.y,self.x).__hash__()
+        # return (self.y,self.x).__hash__()
+        return ((self.x+self.y)*(self.x+self.y+1)<<2)+self.y
+
+
 
     def __iter__(self):
         yield self.y
