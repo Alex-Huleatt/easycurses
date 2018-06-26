@@ -141,7 +141,7 @@ An error will be thrown if you add a rule with the same id as another.
 
 The rule receives a `Pair` instance. If you aren't using `Pair`s you can just pretend it's a tuple.
 
-## KeyboardController
+## InputController
 
 It's in the code, but documentation later.
 

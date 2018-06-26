@@ -270,12 +270,15 @@ class DrawController():
         curses.endwin()
 
 '''Really simple keyboard controller. Provided bare minimum, class designed to be added to as necessary.'''
-class KeyboardController():
+class InputController():
 
     def __init__(self, screen):
         '''Needs a reference to a screen, grab one from the draw controller via get_screen'''
+        curses.mousemask(1)
         self.screen = screen
         self.callbacks = defaultdict(set)
+        self.mouse_callbacks = set()
+        self.mouse_state = curses.getmouse()
 
     def register_keyset(self, keyset, callback, ident=None):
         '''
@@ -284,7 +287,13 @@ class KeyboardController():
         ident can be used to remove callbacks via remove_callback.
         '''
         for k in keyset:
-            self.callbacks[ord(k)].add((ident, callback))
+            if isinstance(k, str):
+                self.callbacks[ord(k)].add((ident, callback))
+
+
+    def register_mouse(self, callback, ident=None):
+        self.mouse_callbacks.add((ident, callback))
+
 
     def getkeys(self): #order not guaranteed
         pressed = set()
@@ -297,10 +306,20 @@ class KeyboardController():
             char = self.screen.getch()
 
         for k in pressed:
+            if k == curses.KEY_MOUSE:
+                s = curses.getmouse()
+                _, x, y, _, state = s
+                
+                if s != self.mouse_state:
+                    for c in self.mouse_callbacks:
+                        c[1](Pair(y, x), state)
+
+                self.mouse_state = s
+
             for h in self.callbacks[k]:
                 h[1](k)
 
-    def remove_callback(self, ident):
+    def remove_keyset_callback(self, ident):
         for c in self.callbacks:
             to_remove = set()
             for e in self.callbacks[c]:
@@ -308,6 +327,12 @@ class KeyboardController():
                     to_remove.add(e)
             self.callbacks[c] -= to_remove
 
+    def remove_mouse_callback(self, ident):
+        to_remove = set()
+        for c in self.mouse_callbacks:
+            if c[0] == ident:
+                to_remove.add(c)
+        self.mouse_callbacks -= to_remove
 
 
 

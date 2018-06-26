@@ -1,22 +1,34 @@
 from easycurses import *
-
+from time import sleep
 def life(): #conway's game of life. 
     try:
         dc = DrawController()
         dc.init_screen()
         dc.full_draw()
         h,w = dc.size
-        y,x = h//2,w//2 #center of screen
+
         CC = ColorController
+        ic = InputController(dc.get_screen())
+
+        def finish_editing(c):
+            finish_editing.done=True
+        finish_editing.done=False
+        ic.register_keyset([' '], finish_editing)
+        active = []
+
+        def clicked(pos, state):
+            if pos in active:
+                active.remove(pos)
+            else:
+                active.append(pos)
+        ic.register_mouse(clicked)
         
-        #Initial state of grid (r-pentomino)
-        active = [
-        (y,x),
-        (y,x+1),
-        (y+1,x+1),
-        (y+1,x+2),
-        (y+2,x+1)
-        ]
+        while not finish_editing.done:
+            ic.getkeys()
+            for a in active:
+                c = Char(a, ' ', color=CC.get_color("white","white"))
+                dc.draw([c])
+            dc.render()
 
         active, enough, new_active = set(map(lambda p:Pair(p[0],p[1]), active)), set(), set()
         while True:
@@ -44,6 +56,8 @@ def life(): #conway's game of life.
                 
 
             active = new_active
+
+            sleep(.05)
 
     finally:
         dc.end() #do this to restore terminal to normal.
