@@ -50,10 +50,7 @@ class Pair():
         raise IndexError("No.")
 
     def __hash__(self):
-        # return (self.y,self.x).__hash__()
         return ((self.x+self.y)*(self.x+self.y+1)<<2)+self.y
-
-
 
     def __iter__(self):
         yield self.y
@@ -269,16 +266,26 @@ class DrawController():
         '''Call to restore terminal to normal.'''
         curses.endwin()
 
-'''Really simple keyboard controller. Provided bare minimum, class designed to be added to as necessary.'''
+'''Really simple keyboard/mouse controller. Provided bare minimum.'''
 class InputController():
 
     def __init__(self, screen):
         '''Needs a reference to a screen, grab one from the draw controller via get_screen'''
+        
         curses.mousemask(1)
+
+        self.use_mouse = True
+        try:
+            curses.getmouse()
+        except:
+            self.use_mouse = False
+
         self.screen = screen
         self.callbacks = defaultdict(set)
-        self.mouse_callbacks = set()
-        self.mouse_state = curses.getmouse()
+
+        if self.use_mouse:
+            self.mouse_callbacks = set()
+            self.mouse_state = curses.getmouse()
 
     def register_keyset(self, keyset, callback, ident=None):
         '''
@@ -290,12 +297,16 @@ class InputController():
             if isinstance(k, str):
                 self.callbacks[ord(k)].add((ident, callback))
 
-
+    def can_use_mouse(self):
+        return self.use_mouse
     def register_mouse(self, callback, ident=None):
+        '''
+        After any mouse click we send the mouse position and state to all callbacks. 
+        '''
         self.mouse_callbacks.add((ident, callback))
 
 
-    def getkeys(self): #order not guaranteed
+    def getkeys(self): #order of callbacks not guaranteed
         pressed = set()
         char = self.screen.getch()
         while True:
@@ -306,7 +317,7 @@ class InputController():
             char = self.screen.getch()
 
         for k in pressed:
-            if k == curses.KEY_MOUSE:
+            if k == curses.KEY_MOUSE and self.use_mouse:
                 s = curses.getmouse()
                 _, x, y, _, state = s
                 
@@ -333,6 +344,3 @@ class InputController():
             if c[0] == ident:
                 to_remove.add(c)
         self.mouse_callbacks -= to_remove
-
-
-

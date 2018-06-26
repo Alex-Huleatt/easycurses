@@ -14,7 +14,7 @@ def life(): #conway's game of life.
             finish_editing_callback.done=True
         finish_editing_callback.done=False
 
-        ic.register_keyset([' '], finish_editing_callback) #space to finish editing
+        ic.register_keyset(['\n'], finish_editing_callback) #space to finish editing
         active = set() #list of active cells
 
         def mouse_callback(pos, state): #upon a mouse click
