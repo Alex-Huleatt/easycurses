@@ -10,27 +10,30 @@ def life(): #conway's game of life.
         CC = ColorController
         ic = InputController(dc.get_screen())
 
-        def finish_editing(c):
-            finish_editing.done=True
-        finish_editing.done=False
-        ic.register_keyset([' '], finish_editing)
-        active = []
+        def finish_editing_callback(c): #variable in scope to inside and outside this function
+            finish_editing_callback.done=True
+        finish_editing_callback.done=False
 
-        def clicked(pos, state):
+        ic.register_keyset([' '], finish_editing_callback) #space to finish editing
+        active = set() #list of active cells
+
+        def mouse_callback(pos, state): #upon a mouse click
             if pos in active:
                 active.remove(pos)
             else:
-                active.append(pos)
-        ic.register_mouse(clicked)
+                active.add(pos)
+
+        ic.register_mouse(mouse_callback)
         
-        while not finish_editing.done:
+        while not finish_editing_callback.done: #finish_editing.done will be true after space is pressed
             ic.getkeys()
             for a in active:
                 c = Char(a, ' ', color=CC.get_color("white","white"))
                 dc.draw([c])
             dc.render()
 
-        active, enough, new_active = set(map(lambda p:Pair(p[0],p[1]), active)), set(), set()
+        enough = set() #used to speed up generation
+        new_active = set() #temporary buffer
         while True:
             for a in active:
                 c = Char(a, ' ', color=CC.get_color("white","white"))
