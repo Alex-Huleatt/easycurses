@@ -92,9 +92,6 @@ class Pair():
             else:
                 return RIGHT
 
-
-
-
 class Char():
     '''This is the class that gets sent to draw controller to render a single character'''
     def __init__(self, pos, character, color=1):
@@ -299,12 +296,12 @@ class InputController():
 
     def can_use_mouse(self):
         return self.use_mouse
+        
     def register_mouse(self, callback, ident=None):
         '''
         After any mouse click we send the mouse position and state to all callbacks. 
         '''
         self.mouse_callbacks.add((ident, callback))
-
 
     def getkeys(self): #order of callbacks not guaranteed
         pressed = set()
